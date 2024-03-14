@@ -46,7 +46,10 @@ const UserHeader = () => {
                     </Flex>
                 </Box>
                 <Box>
-                    <Avatar name="Mark Zuckerberg" src="/zuck-avatar.png" size={"xl"} />
+                    <Avatar name="Mark Zuckerberg" src="/zuck-avatar.png" size={{
+                        base:"md",
+                        md:"xl"
+                    }} />
                 </Box>
             </Flex>
             <Text>
@@ -85,7 +88,9 @@ const UserHeader = () => {
                     justifyContent={"center"}
                     pb={3}
                     borderBottom={isPostPage ? "1.5px solid white" : "1.5px solid gray"}
-                    color={isPostPage ? "white" : "gray.dark"}>
+                    // color={isPostPage ? "white" : "gray.dark"}>
+                    //     color={}
+                    >
                     <Text fontWeight={"bold"}>Posts</Text>
                 </Flex>
 
@@ -94,8 +99,10 @@ const UserHeader = () => {
                     cursor={"pointer"}
                     justifyContent={"center"}
                     pb={3}
+                    color={"gray.dark"}
                     borderBottom={isRepliesPage ? "1.5px solid white" : "1.5px solid gray"}
-                    color={isRepliesPage ? "white" : "gray.dark"}>
+                    // color={isRepliesPage ? "white" : "gray.dark"}
+                    >
                     <Text fontWeight={"bold"}>Replies</Text>
                 </Flex>
             </Flex>
