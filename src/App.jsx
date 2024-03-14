@@ -3,6 +3,7 @@ import { Route ,Routes } from "react-router-dom"
 import UserPage from "./pages/UserPage"
 import PostPage from "./pages/PostPage"
 import Header from "./components/Header"
+import RepliesPage from "./pages/RepliesPage"
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
       <Header/>
       <Routes>
         <Route path="/:userName" element={<UserPage/> }  ></Route>
+        <Route path="/replies" element={<RepliesPage/> }  ></Route>
         <Route path="/:userName/post/:pid" element={<PostPage/>}></Route>
       </Routes>
      </Container>
