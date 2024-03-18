@@ -27,7 +27,7 @@ const colors={
     light:"#1e1e1e"
   }
 }
-const theme=extendTheme({config  ,styles , colors})
+const theme=extendTheme({config  ,styles , colors});
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     {/* using chakraprovider for ui wrapping our app inside it */}
@@ -39,5 +39,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </ChakraProvider>
     </BrowserRouter>
     </RecoilRoot>
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+  
+);

@@ -48,9 +48,11 @@ const handleLogin=async()=>{
     {
       showToast("error" ,data.message ,"error");
     }
-    localStorage.setItem("user-threads" , JSON.stringify(data))
-    // console.log("data inside handlelogin" , data);
+
     setUser(data);
+    localStorage.setItem("user-threads" , JSON.stringify(data))
+    console.log("data inside handlelogin" , data);
+    
   } catch (error) {
     
   }

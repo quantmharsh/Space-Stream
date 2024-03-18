@@ -24,8 +24,11 @@ import useShowToast from "../hooks/useShowToast";
 
 export default function UpdateProfilePage() {
     const[user , setUser]= useRecoilState(userAtom);
+	console.log("user details in updateprofile" , user);
     const [inputs , setInputs]=useState({
-        name:user.name,
+		
+        // name:user.user.name,
+		name:user.name,
         username:user.username,
         email:user.email,
         password:"",
@@ -38,13 +41,14 @@ export default function UpdateProfilePage() {
     const { handleImageChange , imgUrl}=usePreviewImg();
     const handleSubmit=async(e)=>{
         e.preventDefault();
-        console.log("user data in updateprofilepage" ,user);
-        console.log("userid" ,user.id);
-        console.log("user_id" ,user._id);
-        console.log( "complete url",`/api/users/update/${user.id}`);
+        console.log("user data in updateprofilepage inside handlesubmit" ,user);
+        console.log("userid in UpdateProfile page inside handlesubmit" ,user._id);
+		// console.log("user_id in updae profile page" , user._id)
+        // console.log("user_id" ,user.user._id);
+        // console.log( "complete url",`/api/users/update/${user.user._id}`);
 
         try {
-            const res= await fetch(`/api/users/update/${user.id}`,{
+            const res= await fetch(`/api/users/update/${user._id}`,{
              method: "PUT",
              headers:{
                 "Content-Type":"application/json",
