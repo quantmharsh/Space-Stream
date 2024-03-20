@@ -40,7 +40,7 @@ const UserHeader = ({ user }) => {
 			currentUser &&
 			currentUser._id
 		) {
-			setFollowing(user.followers.includes(currentUser._id));
+			setFollowing(user.followers.includes(currentUser?._id));
 		}
 	}, [user, currentUser]); // Add user and currentUser as dependencies so this effect runs when they change
 
@@ -76,7 +76,7 @@ const UserHeader = ({ user }) => {
 			} else {
 				showToast("success", `Followed ${user.name}`, "success");
 				console.log();
-				user.followers.push(currentUser.user._id);
+				user.followers.push(currentUser?.user._id);
 				console.log("currentUser.user._id", currentUser.user._id);
 				console.log(" after user follows", user.followers);
 			}

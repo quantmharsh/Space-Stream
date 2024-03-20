@@ -4,32 +4,46 @@ import UserPost from '../components/UserPost';
 import { useParams } from 'react-router-dom';
 import useShowToast from '../hooks/useShowToast';
 import { Flex, Spinner } from '@chakra-ui/react';
+import Post from '../components/Post';
+import useGetUserProfile from '../hooks/useGetUserProfile';
+import { useRecoilState } from 'recoil';
+import postsAtom from '../atoms/postsAtom';
 
 const UserPage = () => {
-  const [user, setUser] = useState({});
-  const [loading, setLoading] = useState(true);
+  const{user , loading}=useGetUserProfile();
+  // const[posts , setPosts]=useState([])
+  const[posts , setPosts]=useRecoilState(postsAtom);
+  const[fetchingPosts , setFetechingPosts]=useState(true);
   const showToast = useShowToast();
   const { username } = useParams();
 
   useEffect(() => {
     console.log("username " ,username)
-    const getUser = async () => {
+ 
+    const getPosts=async()=>
+    {
+      setFetechingPosts(true);
       try {
-        const response = await fetch(`/api/users/profile/${username}`);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        setUser(data);
+        const res= await fetch(`/api/posts/user/${username}`);
+        const data= await res.json();
+        console.log("data in getposts" ,data);
+        setPosts(data);
+
+        
       } catch (error) {
-        console.error('There has been a problem with your fetch operation:', error);
-        showToast("Error", error.message, "error");
-      } finally {
-        setLoading(false);
+        showToast("Error" , error.message,"error")
+        setPosts([])
+        
+
       }
-    };
-    getUser();
-  }, [username, showToast]);
+      finally{
+        setFetechingPosts(false);
+      }
+    }
+  
+    getPosts();
+  }, [username, showToast , setPosts]);
+
 
   if (loading) {
     return (
@@ -42,9 +56,21 @@ const UserPage = () => {
   return (
     <div>
       <UserHeader user={user}/>
-      <UserPost likes={269} replies={120} postImg="/post1.png" postTitle="Lets learn about react js "/>
+      {/* <UserPost likes={269} replies={120} postImg="/post1.png" postTitle="Lets learn about react js "/>
       <UserPost likes={121} replies={43} postImg="/post2.png" postTitle="Discuss about learning node js and express js"/>
-      <UserPost likes={790} replies={6140} postImg="/post3.png" postTitle="Important questions for leetcode"/>
+      <UserPost likes={790} replies={6140} postImg="/post3.png" postTitle="Important questions for leetcode"/> */}
+      {!fetchingPosts && posts.length===0 &&(
+           <h1> User Does not have any post to show</h1>
+      )}
+      {fetchingPosts &&(
+        <Flex justifyContent={"center"} my={12}>
+          <Spinner size={"xl"}/>
+          </Flex>
+       
+      )}
+      {posts.map((post)=>(
+        <Post key={post._id} post={post}  postedBy={post.postedBy} />
+      ))}
     </div>
   );
 };

@@ -4,9 +4,11 @@ import { Button, CloseButton, Flex, FormControl, Image, Input, Modal, ModalBody,
 import React, { useRef, useState } from 'react'
 import usePreviewImg from '../hooks/usePreviewImg'
 import { BsFillImageFill } from 'react-icons/bs'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import userAtom from '../atoms/userAtom'
 import useShowToast from '../hooks/useShowToast'
+import postsAtom from '../atoms/postsAtom'
+import { useParams } from 'react-router-dom'
 
 
 const CreatePost = () => {
@@ -21,6 +23,8 @@ const CreatePost = () => {
     const user= useRecoilValue(userAtom)
     const showToast= useShowToast();
     const[loading , setLoading]=useState(false);
+    const [posts , setPosts]=useRecoilState(postsAtom);
+    const {username}=useParams();
     const handleTextChange=async(e)=>{
         const inputText= e.target.value;
         if(inputText.length> MAX_CHAR)
@@ -52,6 +56,13 @@ const CreatePost = () => {
             if(data.message)
             {
                 showToast("Success", "Post Created Successfully","success")
+                // adding new post at top doing this to get new post without refereshing the page 
+                // if we create post then page should be refereshed if we are on our profile page not on any other user page
+                if(username===user.username)
+                {
+                  setPosts([data , ...posts]);
+                }
+             
                 setPostText("")
                 setImgUrl("")
                 onClose();
@@ -60,6 +71,7 @@ const CreatePost = () => {
             }
             
             showToast("Success", "Post Created Successfully","success")
+            setPosts([data , ...posts]);
             // close model automatically if post is done
             setPostText("")
             setImgUrl("")
@@ -81,12 +93,15 @@ const CreatePost = () => {
     <>
     <Button
     bottom={10}
-    right={10}
+    right={5}
     position={"fixed"}
-    leftIcon={<AddIcon/>}
+    
     bg={useColorModeValue("gray.300" ,"gray.dark")}
     onClick={onOpen}
-    >Post</Button>
+    size={{base:"sm " , sm:"md"}}
+    >
+      <AddIcon/> 🚀
+     </Button>
        <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
