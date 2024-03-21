@@ -1,4 +1,4 @@
-import { Button, Container } from "@chakra-ui/react"
+import { Button, Container  , Box} from "@chakra-ui/react"
 import { Navigate, Route ,Routes } from "react-router-dom"
 import UserPage from "./pages/UserPage"
 import PostPage from "./pages/PostPage"
@@ -12,6 +12,7 @@ import { useRecoilValue } from "recoil"
 import LogOutButton from "./components/LogOutButton"
 import CreatePost from "./components/CreatePost"
 import { useNavigate } from 'react-router-dom'; 
+import ChatPage from "./pages/ChatPage"
 
 
 function App() {
@@ -21,7 +22,9 @@ function App() {
 
   return (
     <>
-    {/* using container to wrap everything inside it. and to display all childs in center */}
+  {/* box we are adding during chat application because chat require moe screen size */}
+    <Box position={"relative"} w={"full"}>
+        {/* using container to wrap everything inside it. and to display all childs in center */}
     <Container maxW='620px'>
       <Header/>
      
@@ -41,11 +44,13 @@ function App() {
          }  ></Route>
         <Route path="/replies" element={<RepliesPage/> }  ></Route>
         <Route path="/:username/post/:pid" element={<PostPage/>}></Route>
+        <Route path="/chat" element={user?<ChatPage/>: <Navigate to={"/auth"}/>}></Route>
         
       </Routes>
       {/* {user && <LogOutButton/>} */}
       
      </Container>
+     </Box>
     </>
   )
 }
