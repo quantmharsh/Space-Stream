@@ -19,6 +19,7 @@ function App() {
   
   const user= useRecoilValue(userAtom);
   const navigate = useNavigate();
+  console.log("user detail in App.jsx " , user)
 
   return (
     <>

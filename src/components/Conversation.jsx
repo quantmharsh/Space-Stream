@@ -1,8 +1,24 @@
 import { Avatar, AvatarBadge, Flex, Stack, WrapItem, useColorModeValue  ,Text, Image} from '@chakra-ui/react'
 import React from 'react'
+import { useRecoilState, useRecoilValue } from 'recoil';
+import  userAtom from "../atoms/userAtom"
+import {BsCheck2All} from "react-icons/bs"
+import {selectedConversationAtom} from "../atoms/messagesAtom"
 
-const Conversation = () => {
+const Conversation = ({conversation}) => {
+  const user=  conversation.participants[0];
+  const lastmessage= conversation.lastMessage;
+  
+  const[selectedConversation , setSelectedConversation]=useRecoilState(selectedConversationAtom)
+
+  const currentUser= useRecoilState(userAtom);
+  console.log("selectedConversation" ,selectedConversation);
+  console.log("conversation" , conversation);
+  console.log("conversation id" , conversation._id)
+  console.log("user" , user);
+  console.log( "current user._id" ,currentUser[0]._id) 
   return (
+
     <Flex
     gap={4}
     alignItems={"center"}
@@ -13,18 +29,38 @@ const Conversation = () => {
         color:"white"
     }}
     borderRadius={"md"}
+    onClick={()=>
+      setSelectedConversation({
+        _id:conversation._id,
+        userId:user._id,
+        username:user.username,
+        userProfilePic:user.profilePic,
+        // mock field is  to determine if user previouslty have chat with this user or not
+        //if no then we will show nothing in right conversation container because there is no message
+        //only name of the user(reciver) will be shown.used it in chatpage for mock Conversation
+        
+        mock:conversation.mock
+      })
+    
+
+    }
     >
+
     {/* AVATAR ON LEFT SIDE WITH PIC OF USER */}
     <WrapItem>
-        <Avatar size={{sm:"sm" ,base:"xs" ,md:"md"}} src='https://bit.ly/borken-link'>
+        <Avatar size={{sm:"sm" ,base:"xs" ,md:"md"}} src={user?.profilePic}>
            <AvatarBadge boxSize={"1em"} bg={"green.500"}/>
         </Avatar>
     </WrapItem>
     <Stack direction={"column"} fontSize={"small"}>
-        <Text fontWeight={"700"} display={"flex"} alignItems={"center"} >
-            Anjali <Image src= "./verified.png " w={4} h={4} ml={1}/>
+        <Text fontWeight={"xs"} display={"flex"} alignItems={"center"}  gap={1}>
+         
+           {user?.username} <Image src= "./verified.png " w={4} h={4} ml={1}/>
         </Text>
-        <Text fontSize={"xs"} display={"flex"}alignItems={"center"} gap={1}> Hello some messages ...</Text>
+
+        <Text fontSize={"xs"} display={"flex"}alignItems={"center"} gap={1}> 
+        {currentUser[0]?._id ===lastmessage.sender ? <BsCheck2All size={16}/>  :""}
+        {lastmessage.text.length>18? lastmessage.text.substring(0 ,18)+"..." :lastmessage.text}</Text>
 
 
     </Stack>
