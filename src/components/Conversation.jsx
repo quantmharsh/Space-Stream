@@ -5,7 +5,8 @@ import  userAtom from "../atoms/userAtom"
 import {BsCheck2All} from "react-icons/bs"
 import {selectedConversationAtom} from "../atoms/messagesAtom"
 
-const Conversation = ({conversation}) => {
+
+const Conversation = ({conversation , isOnline}) => {
   const user=  conversation.participants[0];
   const lastmessage= conversation.lastMessage;
   
@@ -49,7 +50,7 @@ const Conversation = ({conversation}) => {
     {/* AVATAR ON LEFT SIDE WITH PIC OF USER */}
     <WrapItem>
         <Avatar size={{sm:"sm" ,base:"xs" ,md:"md"}} src={user?.profilePic}>
-           <AvatarBadge boxSize={"1em"} bg={"green.500"}/>
+           <AvatarBadge boxSize={"1em"} bg={isOnline?"green.500":"gray.500"}/>
         </Avatar>
     </WrapItem>
     <Stack direction={"column"} fontSize={"small"}>

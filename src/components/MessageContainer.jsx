@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Button, Container, Box  ,Flex ,Text , Input, useColorMode, useColorModeValue, SkeletonCircle, Skeleton, Avatar, Image, Divider } from "@chakra-ui/react";
 import Message from './Message';
 import MessageInput from './MessageInput';
 import useShowToast from '../hooks/useShowToast';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { selectedConversationAtom } from '../atoms/messagesAtom';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { conversationsAtom, selectedConversationAtom } from '../atoms/messagesAtom';
 import userAtom from '../atoms/userAtom';
+import { useSocket } from '../context/SocketContext.jsx';
+
 
 
 const MessageContainer = () => {
@@ -14,6 +16,55 @@ const MessageContainer = () => {
   const[loadingMessages , setLoadingMessages]=useState(true);
   const[messages , setMessages]=useState([])
   const currentUser= useRecoilValue(userAtom)
+  
+  const setConversations = useSetRecoilState(conversationsAtom)
+  const messageEndRef=useRef(null);
+  //use effecct for updating message using web socket 
+  //here we are listening for incoming request. 
+  //destruct the  value which we are getting from useSocket
+  const { socket }= useSocket();
+  useEffect(() => {
+
+    if(socket)
+    {
+    socket?.on("newMessage" ,(message)=>{ 
+      // console.log("selected conversation id" , selectedConversation._id);
+      // console.log("message.conversation id" , message.conversationId);
+    
+
+       if(selectedConversation._id=== message.conversationId)
+       {
+         setMessages((prevMessages)=> [...prevMessages , message]);
+       }
+    
+      //for updating last message when using socket we want to update it in real time
+      setConversations((prev)=>{
+        const updatedConversations =prev.map(conversation=>{
+          if(conversation._id===message.conversationId)
+          {
+            // console.log("conversation id" , conversation._id);
+            return{
+              ...conversation ,
+               lastMessage:{
+                text:message.text,
+                sender:message.sender
+               }
+            }
+          }
+          return conversation;
+        })
+        return updatedConversations;
+      })
+    
+
+    })
+  }
+
+    // after this  unmount  the socket
+    return()=> socket.off("newMessage");
+   
+  }, [socket])
+  
   useEffect(() => {
     const getMessages=async()=>{
       setLoadingMessages(true);
@@ -23,7 +74,8 @@ const MessageContainer = () => {
         {
           return;
         }
-
+          if(selectedConversation.userId)
+          {
          const res= await fetch(`/api/messages/${selectedConversation.userId}`)
          const data=  await res.json();
          if(data.error)
@@ -33,8 +85,10 @@ const MessageContainer = () => {
          }
          console.log("data in getMessages",data);
          setMessages(data)
+        }
       } catch (error) {
-        showToast("Error" , error.message , "error");
+        showToast("Error" ,error.message, "error");
+        console.log(error.message);
         
       }
       finally{
@@ -44,6 +98,11 @@ const MessageContainer = () => {
     getMessages();
    
   }, [showToast , selectedConversation.userId ])
+
+  useEffect(() => {
+   messageEndRef.current?.scrollIntoView({behaviour:"smooth"});
+  }, [messages])
+  
   
   return (
     <Flex flex={70}  bg={useColorModeValue("gray.200" ,"gray.light")}
@@ -78,7 +137,11 @@ const MessageContainer = () => {
         )}
        {!loadingMessages && (
         messages.map((message)=>(
-          <Message  key={message._id}  message={message} ownMessage={currentUser._id === message.sender} />
+          <Flex  key={message._id}  direction={"column"}
+          ref={messages.length -1 === messages.indexOf(message) ?messageEndRef : null}
+          >
+          <Message   message={message} ownMessage={currentUser._id === message.sender} />
+          </Flex>
        
         ))
        )}
