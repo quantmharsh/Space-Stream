@@ -27,15 +27,17 @@ const MessageContainer = () => {
 
     if(socket)
     {
-    socket?.on("newMessage" ,(message)=>{ 
+    socket.on("newMessage" ,(message)=>{ 
       // console.log("selected conversation id" , selectedConversation._id);
       // console.log("message.conversation id" , message.conversationId);
     
 
        if(selectedConversation._id=== message.conversationId)
        {
-         setMessages((prevMessages)=> [...prevMessages , message]);
+            setMessages((prevMessages)=> [...prevMessages , message]); 
        }
+
+
     
       //for updating last message when using socket we want to update it in real time
       setConversations((prev)=>{
@@ -63,7 +65,44 @@ const MessageContainer = () => {
     // after this  unmount  the socket
     return()=> socket.off("newMessage");
    
-  }, [socket])
+  }, [socket , selectedConversation , setConversations ])
+
+
+  // useeffect for marking messages as seen 
+  useEffect(() => {
+    // checking whether  lastmessage is from loged in user or reciver to whom we are chatting with . if reciver then  do socket.emit
+    const lastMessageIsFromOtherUser = messages.length &&  messages[messages.length-1].sender!== currentUser._id
+    if(lastMessageIsFromOtherUser)
+    {
+      socket.emit("markMessagesAsSeen" ,{
+        conversationId:selectedConversation._id ,
+        // userid of user with whom we are chatting
+        userId:selectedConversation.userId
+
+      })
+    }
+    //listening for event
+    socket?.on("messagesSeen" , ({conversationId})=>{
+      if(conversationId=== selectedConversation._id)
+      {
+         setMessages((prev)=>{
+          const updatedMessages=prev.map((message)=>{
+            if(!message.seen)
+            {
+              return {
+                ...message ,
+                seen:true ,
+              };
+            }
+            return message;
+          });
+          return updatedMessages;
+         })
+      }
+    })
+
+  }, [socket , selectedConversation , currentUser._id ,messages ])
+  
   
   useEffect(() => {
     const getMessages=async()=>{
@@ -97,7 +136,7 @@ const MessageContainer = () => {
     }
     getMessages();
    
-  }, [showToast , selectedConversation.userId ])
+  }, [showToast , selectedConversation.userId  , selectedConversation.mock ])
 
   useEffect(() => {
    messageEndRef.current?.scrollIntoView({behaviour:"smooth"});

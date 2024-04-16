@@ -1,4 +1,4 @@
-import { Avatar, AvatarBadge, Flex, Stack, WrapItem, useColorModeValue  ,Text, Image} from '@chakra-ui/react'
+import { Avatar, AvatarBadge, Flex, Stack, WrapItem, useColorModeValue  ,Text, Image, Box} from '@chakra-ui/react'
 import React from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil';
 import  userAtom from "../atoms/userAtom"
@@ -60,7 +60,11 @@ const Conversation = ({conversation , isOnline}) => {
         </Text>
 
         <Text fontSize={"xs"} display={"flex"}alignItems={"center"} gap={1}> 
-        {currentUser[0]?._id ===lastmessage.sender ? <BsCheck2All size={16}/>  :""}
+        {currentUser[0]?._id ===lastmessage.sender ? (
+          <Box color={lastmessage.seen ?"blue.400":""}>
+            <BsCheck2All size={16}/>
+          </Box>
+        )  :""}
         {lastmessage.text.length>18? lastmessage.text.substring(0 ,18)+"..." :lastmessage.text}</Text>
 
 
