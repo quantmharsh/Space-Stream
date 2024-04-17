@@ -2,7 +2,7 @@ import { Avatar, AvatarBadge, Flex, Stack, WrapItem, useColorModeValue  ,Text, I
 import React from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil';
 import  userAtom from "../atoms/userAtom"
-import {BsCheck2All} from "react-icons/bs"
+import {BsCheck2All, BsFillImageFill} from "react-icons/bs"
 import {selectedConversationAtom} from "../atoms/messagesAtom"
 
 
@@ -65,8 +65,8 @@ const Conversation = ({conversation , isOnline}) => {
             <BsCheck2All size={16}/>
           </Box>
         )  :""}
-        {lastmessage.text.length>18? lastmessage.text.substring(0 ,18)+"..." :lastmessage.text}</Text>
-
+        {lastmessage.text.length>18? lastmessage.text.substring(0 ,18)+"..." :lastmessage.text|| <BsFillImageFill size={16}/> }</Text>
+ 
 
     </Stack>
     </Flex>
