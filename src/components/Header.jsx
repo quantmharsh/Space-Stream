@@ -8,6 +8,7 @@ import {RxAvatar} from "react-icons/rx"
 import {FiLogOut} from  "react-icons/fi"
 import useLogout from '../hooks/useLogout';
 import  {BsFillChatQuoteFill} from "react-icons/bs"
+import {MdOutlineSettings} from "react-icons/md"
 const Header = () => {
     // it is hoook provided by chakra ui for changing color 
      const{colorMode , toggleColorMode } =useColorMode();
@@ -40,6 +41,10 @@ const Header = () => {
             </Link>
             <Link as ={RouterLink} to = {`/chat`}>
               <BsFillChatQuoteFill size={20}/>
+            </Link>
+            {/* step 1 add link to go to settings (next step in app) */}
+            <Link as ={RouterLink} to = {`/settings`}>
+              <MdOutlineSettings size={20}/>
             </Link>
             <Button  size={"xs"} onClick={logout} > 
  <FiLogOut  size={20}/> </Button>

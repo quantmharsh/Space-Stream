@@ -22,6 +22,11 @@ const UserPage = () => {
  
     const getPosts=async()=>
     {
+      // if user account is freezed then we will return 
+      if(!user)
+      {
+        return;
+      }
       setFetechingPosts(true);
       try {
         const res= await fetch(`/api/posts/user/${username}`);
@@ -42,7 +47,7 @@ const UserPage = () => {
     }
   
     getPosts();
-  }, [username, showToast , setPosts]);
+  }, [username, showToast , setPosts , user]);
 
 
   if (loading) {
@@ -51,6 +56,10 @@ const UserPage = () => {
         <Spinner size={"xl"} />
       </Flex>
     );
+  }
+  if(!user && !loading)
+  {
+    return <h1> User not  found...</h1>
   }
 
   return (

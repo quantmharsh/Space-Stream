@@ -1,10 +1,11 @@
-import { Flex , Button, Spinner} from '@chakra-ui/react'
+import { Flex , Button, Spinner, Box} from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import useShowToast from '../hooks/useShowToast';
 import Post from '../components/Post';
 import { useRecoilState } from 'recoil';
 import postsAtom from '../atoms/postsAtom';
+import SuggestedUsers from '../components/SuggestedUsers';
 
 const HomePage = () => {
   
@@ -37,7 +38,9 @@ const HomePage = () => {
   
   return (
     <>
-    {loading &&(
+     <Flex gap={10} alignItems={"flex-start"}>
+      <Box flex={70}>
+      {loading &&(
       <Flex justify={"center"}>
         <Spinner size={"xl"}/>
       </Flex>
@@ -49,6 +52,15 @@ const HomePage = () => {
       <Post key={post._id} post={post} postedBy={post.postedBy}/>
 
     ))}
+      </Box>
+      <Box flex={30} 
+      display={{
+        base:"none" , 
+        md:"block"
+      }}>
+            <SuggestedUsers/>
+      </Box>
+     </Flex>
     </>
   )
 }

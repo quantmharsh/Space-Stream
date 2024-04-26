@@ -21,14 +21,18 @@ import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { Link as RouterLink } from "react-router-dom";
 import useShowToast from "../hooks/useShowToast";
+import useFollowUnfollow from "../hooks/useFollowUnfollow";
 
 const UserHeader = ({ user }) => {
 	const showToast = useShowToast();
 	const location = useLocation();
 	const currentUser = useRecoilValue(userAtom);
 
-	const [following, setFollowing] = useState(false);
-    const[updating , setUpdating]=useState(false);
+	// const [following, setFollowing] = useState(false);
+    // const[updating , setUpdating]=useState(false);
+    const { handleFollowUnfollow, following, updating  , setFollowing} = useFollowUnfollow(user);
+	
+
 
 	// Use useEffect to set the state after ensuring all necessary data is available
 	useEffect(() => {
@@ -49,47 +53,48 @@ const UserHeader = ({ user }) => {
 	console.log("Current User at top" , currentUser)
 
 	// Handling folow  unfolow
-	const handleFollowUnfollow = async () => {
-        if(!currentUser)
-        {
-            showToast("error" ,"Please login to follow" ,"error")
-            return;
-        }
-        setUpdating(true)
-		try {
-			const res = await fetch(`/api/users/follow/${user._id}`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
-			const data = await res.json();
+	// const handleFollowUnfollow = async () => {
+    //     if(!currentUser)
+    //     {
+    //         showToast("error" ,"Please login to follow" ,"error")
+    //         return;
+    //     }
+    //     setUpdating(true)
+	// 	try {
+	// 		const res = await fetch(`/api/users/follow/${user._id}`, {
+	// 			method: "POST",
+	// 			headers: {
+	// 				"Content-Type": "application/json",
+	// 			},
+	// 		});
+	// 		const data = await res.json();
 
-			if (data.error) {
-				toast("error", data.error, "Error");
-				return;
-			}
-			if (following) {
-				showToast("success", `Unfollowed ${user.name}`, "success");
-				   user.followers.pop();
-				console.log("after unfollow", user.followers);
-			} else {
-				showToast("success", `Followed ${user.name}`, "success");
-				console.log();
-				user.followers.push(currentUser?.user._id);
-				console.log("currentUser.user._id", currentUser.user._id);
-				console.log(" after user follows", user.followers);
-			}
+	// 		if (data.error) {
+	// 			showToast("error", data.error, "error");
+	// 			return;
+	// 		}
+	// 		if (following) {
+	// 			showToast("success", `Unfollowed ${user.name}`, "success");
+	// 			   user.followers.pop();
+	// 			console.log("after unfollow", user.followers);
+	// 		} else {
+	// 			showToast("success", `Followed ${user.name}`, "success");
+	// 			console.log();
+	// 			user.followers.push(currentUser?._id);
+	// 			console.log("currentUser._id ",currentUser._id)
+	// 			// console.log("currentUser.user._id", currentUser.user._id);
+	// 			// console.log(" after user follows", user.followers);
+	// 		}
 
-			setFollowing(!following);
-			console.log(data);
-		} catch (error) {
-            showToast("Error" ,error ,"error")
+	// 		setFollowing(!following);
+	// 		console.log(data);
+	// 	} catch (error) {
+    //         showToast("Error" ,error ,"error")
 
-        }finally{
-            setUpdating(false);
-        }
-	};
+    //     }finally{
+    //         setUpdating(false);
+    //     }
+	// };
 
 	const copyURL = () => {
 		const currentUrl = window.location.href;
