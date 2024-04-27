@@ -99,13 +99,7 @@ const UserHeader = ({ user }) => {
 	const copyURL = () => {
 		const currentUrl = window.location.href;
 		navigator.clipboard.writeText(currentUrl).then(() => {
-			toast({
-				title: "Link Copied",
-				description: "Profile Link Copied",
-				status: "success",
-				duration: 9000,
-				isClosable: true,
-			});
+			showToast("success" , "copied succesfully" ,"success");
 		});
 	};
 
@@ -187,7 +181,10 @@ const UserHeader = ({ user }) => {
 				</Flex>
 				<Flex>
 					<Box className="icon-container">
-						<BsInstagram size={24} cursor={"pointer"} />
+					<Link href="https://instagram.com" isExternal> 
+						<BsInstagram size={24} cursor={"pointer"}/>
+						     
+							</Link>
 					</Box>
 					<Box className="icon-container">
 						<Menu>

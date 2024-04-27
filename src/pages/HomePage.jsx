@@ -6,6 +6,7 @@ import Post from '../components/Post';
 import { useRecoilState } from 'recoil';
 import postsAtom from '../atoms/postsAtom';
 import SuggestedUsers from '../components/SuggestedUsers';
+import UserSearch from '../components/UserSearch';
 
 const HomePage = () => {
   
@@ -40,6 +41,7 @@ const HomePage = () => {
     <>
      <Flex gap={10} alignItems={"flex-start"}>
       <Box flex={70}>
+        <UserSearch/>
       {loading &&(
       <Flex justify={"center"}>
         <Spinner size={"xl"}/>
